@@ -19,6 +19,9 @@ contract KittyInterface{
 
 contract ZombieFeeding is ZombieFactory {
 
+  address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d; // this is the cryptoKitties eth address
+  KittyInterface kittyContract = KittyInterface(ckAddress); // initialize the interface with the ckAddress
+  
   function feedAndMultiply(uint _zombieId, uint _targetDna) public {
     require(msg.sender == zombieToOwner[_zombieId]); // make sure current user is the owner
     Zombie storage myZombie = zombies[_zombieId]; // assign local myZombie to storage (on the blockchain)
