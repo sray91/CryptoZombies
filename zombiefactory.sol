@@ -17,7 +17,8 @@ contract ZombieFactory {
     mapping (uint => address) public zombieToOwner; // zombieToOwner[uint] returns address
     mapping (address => uint) ownerZombieCount; // ownerZombieCount[address] returns uint
 
-    function _createZombie(string memory _name, uint _dna) private {
+    function _createZombie(string memory _name, uint _dna) internal {
+        // make this function internal instead of private so inherited functions can access
         uint id = zombies.push(Zombie(_name, _dna)) - 1;
         zombieToOwner[id] = msg.sender; // assign address the value of msg.sender which is the current user
         ownerZombieCount[msg.sender]++; // increment uint by 1
