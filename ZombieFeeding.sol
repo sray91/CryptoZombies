@@ -29,4 +29,10 @@ contract ZombieFeeding is ZombieFactory {
     uint newDna = (myZombie.dna + _targetDna) / 2; // take the average using the .dna from the struct
     _createZombie("NoName", newDna); // create a new Zombie with name NoName
   }
+  // interact with the CryptoKitties contract
+  function feedOnKitty(uint _zombieId, uint _kittyId) public{
+        uint kittyDna;
+        (,,,,,,,,,kittyDna) = kittyContract.getKitty(_kittyId); // we only want the genes variable from all of the returned values
+        feedAndMultiply(_zombieId, kittyDna);
+    }
 }
