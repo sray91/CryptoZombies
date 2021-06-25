@@ -18,9 +18,15 @@ contract KittyInterface{
 }
 
 contract ZombieFeeding is ZombieFactory {
-
-  address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d; // this is the cryptoKitties eth address
-  KittyInterface kittyContract = KittyInterface(ckAddress); // initialize the interface with the ckAddress
+  // this is the cryptoKitties eth address - removed to add a function (immutability)
+  // address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d;
+  // initialize the interface with the ckAddress - changing to a declaration - old code in comments:
+  // KittyInterface kittyContract = KittyInterface(ckAddress);
+  KittyInterface kittyContract;  
+  
+  function setKittyContractAddress(address _address) external {
+    kittyContract = KittyInterface(_address);
+  }
   
   function feedAndMultiply(uint _zombieId, uint _targetDna, string memory _species) public {
     require(msg.sender == zombieToOwner[_zombieId]);
@@ -36,7 +42,6 @@ contract ZombieFeeding is ZombieFactory {
   function feedOnKitty(uint _zombieId, uint _kittyId) public {
     uint kittyDna;
     (,,,,,,,,,kittyDna) = kittyContract.getKitty(_kittyId);
-    // And modify function call here:
     feedAndMultiply(_zombieId, kittyDna, "kitty");
   }
 }
