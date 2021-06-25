@@ -9,10 +9,13 @@ contract ZombieFactory is Ownable {
 
     uint dnaDigits = 16;
     uint dnaModulus = 10 ** dnaDigits; // 10^16 = 1e16 = the length of dnaDigits
+    uint cooldownTime = 1 days; // days equals the amount of seconds in a day
 
     struct Zombie {
         string name;
         uint dna;
+        uint32 level;
+        uint32 readyTime;
     }
 
     Zombie[] public zombies; // create new array
@@ -22,7 +25,7 @@ contract ZombieFactory is Ownable {
 
     function _createZombie(string memory _name, uint _dna) internal {
         // make this function internal instead of private so inherited functions can access
-        uint id = zombies.push(Zombie(_name, _dna)) - 1;
+        uint id = zombies.push(Zombie(_name, _dna, 1, uint32(now + cooldownTime))) - 1; // now = Unix time elapsed since January 1st 1970
         zombieToOwner[id] = msg.sender; // assign address the value of msg.sender which is the current user
         ownerZombieCount[msg.sender]++; // increment uint by 1
         emit NewZombie(id, _name, _dna); // send to event handler
