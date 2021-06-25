@@ -22,17 +22,21 @@ contract ZombieFeeding is ZombieFactory {
   address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d; // this is the cryptoKitties eth address
   KittyInterface kittyContract = KittyInterface(ckAddress); // initialize the interface with the ckAddress
   
-  function feedAndMultiply(uint _zombieId, uint _targetDna) public {
-    require(msg.sender == zombieToOwner[_zombieId]); // make sure current user is the owner
-    Zombie storage myZombie = zombies[_zombieId]; // assign local myZombie to storage (on the blockchain)
-    _targetDna = _targetDna % dnaModulus; // make sure that _targetDna isn't longer than 16 digits
-    uint newDna = (myZombie.dna + _targetDna) / 2; // take the average using the .dna from the struct
-    _createZombie("NoName", newDna); // create a new Zombie with name NoName
-  }
-  // interact with the CryptoKitties contract
-  function feedOnKitty(uint _zombieId, uint _kittyId) public{
-        uint kittyDna;
-        (,,,,,,,,,kittyDna) = kittyContract.getKitty(_kittyId); // we only want the genes variable from all of the returned values
-        feedAndMultiply(_zombieId, kittyDna);
+  function feedAndMultiply(uint _zombieId, uint _targetDna, string memory _species) public {
+    require(msg.sender == zombieToOwner[_zombieId]);
+    Zombie storage myZombie = zombies[_zombieId];
+    _targetDna = _targetDna % dnaModulus;
+    uint newDna = (myZombie.dna + _targetDna) / 2;
+    if (keccak256(abi.encodePacked(_species)) == keccak256(abi.encodePacked("kitty"))){
+      newDna = newDna - (newDna % 100) + 99; // if kitty replace last 2 digits of DNA with 99
     }
+    _createZombie("NoName", newDna);
+  }
+
+  function feedOnKitty(uint _zombieId, uint _kittyId) public {
+    uint kittyDna;
+    (,,,,,,,,,kittyDna) = kittyContract.getKitty(_kittyId);
+    // And modify function call here:
+    feedAndMultiply(_zombieId, kittyDna, "kitty");
+  }
 }
