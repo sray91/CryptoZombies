@@ -19,4 +19,9 @@ contract ZombieHelper is ZombieFeeding {
     require(msg.sender == zombieToOwner[_zombieId]);
     zombies[_zombieId].dna = _newDna;
   }
+  // external view functions do not cost any gas
+  function getZombiesByOwner(address _owner) external view returns (uint[] memory) {
+    uint[] memory result = new uint[](ownerZombieCount[_owner]); // lookup how big from mapping
+    return result;
+  }
 }
