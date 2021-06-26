@@ -20,8 +20,17 @@ contract ZombieHelper is ZombieFeeding {
     zombies[_zombieId].dna = _newDna;
   }
   // external view functions do not cost any gas
-  function getZombiesByOwner(address _owner) external view returns (uint[] memory) {
-    uint[] memory result = new uint[](ownerZombieCount[_owner]); // lookup how big from mapping
+  // for loop that iterates through all the zombies in our DApp, 
+  // compares their owner to see if we have a match, and pushes them to our result array before returning it.
+  function getZombiesByOwner(address _owner) external view returns(uint[] memory) {
+    uint[] memory result = new uint[](ownerZombieCount[_owner]);
+    uint counter = 0;
+    for (uint i = 0; i < zombies.length; i++){ 
+      if (zombieToOwner[i] == _owner) {
+        result[counter] = i;
+        counter++;
+      }
+    }
     return result;
   }
 }
